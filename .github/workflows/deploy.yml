@@ -27,42 +27,49 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # 🟦 Login to ACR on the runner (Docker is available here)
       - name: Log in to ACR
         run: az acr login --name $ACR_NAME
 
-      # 🟦 Build and push Docker image from the runner
       - name: Build and push image to ACR
         run: |
           docker build -t $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} .
           docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
 
-      # 🟦 Use azure/CLI only for pure az commands (NO az acr login, NO docker)
       - name: Deploy to Azure Container Apps
         uses: azure/CLI@v2
         with:
           inlineScript: |
-            # 1) Ensure the Container Apps environment exists (this is idempotent)
-            az containerapp env create \
-              --name $CONTAINERAPPS_ENVIRONMENT \
-              --resource-group $RESOURCE_GROUP \
-              --location $LOCATION
+            echo "🔎 Checking if Container Apps environment exists..."
+            EXISTING_ENV=$(az containerapp env show \
+              --name "$CONTAINERAPPS_ENVIRONMENT" \
+              --resource-group "$RESOURCE_GROUP" \
+              --query "name" -o tsv 2>/dev/null || true)
 
-            # 2) Enable ACR admin (safe & only needed once, but idempotent)
-            az acr update -n $ACR_NAME --admin-enabled true
+            if [ -z "$EXISTING_ENV" ]; then
+              echo "🌱 Environment not found. Creating..."
+              az containerapp env create \
+                --name "$CONTAINERAPPS_ENVIRONMENT" \
+                --resource-group "$RESOURCE_GROUP" \
+                --location "$LOCATION"
+            else
+              echo "⏭ Environment already exists. Skipping creation."
+            fi
 
-            # 3) Get ACR credentials
-            ACR_USERNAME=$(az acr credential show -n $ACR_NAME --query "username" -o tsv)
-            ACR_PASSWORD=$(az acr credential show -n $ACR_NAME --query "passwords[0].value" -o tsv)
+            echo "🔐 Ensuring ACR admin is enabled..."
+            az acr update -n "$ACR_NAME" --admin-enabled true
 
-            # 4) Create or update the Container App using the image in ACR
+            echo "🔑 Retrieving ACR credentials..."
+            ACR_USERNAME=$(az acr credential show -n "$ACR_NAME" --query "username" -o tsv)
+            ACR_PASSWORD=$(az acr credential show -n "$ACR_NAME" --query "passwords[0].value" -o tsv)
+
+            echo "🚀 Deploying container app..."
             az containerapp up \
-              --name $CONTAINERAPPS_NAME \
-              --resource-group $RESOURCE_GROUP \
-              --environment $CONTAINERAPPS_ENVIRONMENT \
-              --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} \
+              --name "$CONTAINERAPPS_NAME" \
+              --resource-group "$RESOURCE_GROUP" \
+              --environment "$CONTAINERAPPS_ENVIRONMENT" \
+              --image "$ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}" \
               --target-port 8000 \
               --ingress external \
-              --registry-server $ACR_LOGIN_SERVER \
-              --registry-username $ACR_USERNAME \
-              --registry-password $ACR_PASSWORD
+              --registry-server "$ACR_LOGIN_SERVER" \
+              --registry-username "$ACR_USERNAME" \
+              --registry-password "$ACR_PASSWORD"
