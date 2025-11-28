@@ -42,11 +42,20 @@ jobs:
         uses: azure/CLI@v2
         with:
           inlineScript: |
+            # 1) Ensure the Container Apps environment exists (this is idempotent)
             az containerapp env create \
               --name $CONTAINERAPPS_ENVIRONMENT \
               --resource-group $RESOURCE_GROUP \
               --location $LOCATION
 
+            # 2) Enable ACR admin (safe & only needed once, but idempotent)
+            az acr update -n $ACR_NAME --admin-enabled true
+
+            # 3) Get ACR credentials
+            ACR_USERNAME=$(az acr credential show -n $ACR_NAME --query "username" -o tsv)
+            ACR_PASSWORD=$(az acr credential show -n $ACR_NAME --query "passwords[0].value" -o tsv)
+
+            # 4) Create or update the Container App using the image in ACR
             az containerapp up \
               --name $CONTAINERAPPS_NAME \
               --resource-group $RESOURCE_GROUP \
@@ -54,4 +63,6 @@ jobs:
               --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} \
               --target-port 8000 \
               --ingress external \
-              --registry-server $ACR_LOGIN_SERVER
+              --registry-server $ACR_LOGIN_SERVER \
+              --registry-username $ACR_USERNAME \
+              --registry-password $ACR_PASSWORD
