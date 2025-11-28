@@ -27,7 +27,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Log in to ACR
-        uses: azure/cli-action@v2
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az acr login --name $ACR_NAME
@@ -38,7 +38,7 @@ jobs:
           docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
 
       - name: Ensure Container Apps environment exists
-        uses: azure/cli-action@v2
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az containerapp env create \
@@ -47,14 +47,15 @@ jobs:
               --location eastus
 
       - name: Deploy to Azure Container Apps
-        uses: azure/cli-action@v2
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az containerapp up \
               --name $CONTAINERAPPS_NAME \
               --resource-group $RESOURCE_GROUP \
-              --environment $CONTAINERAPPS_ENVIRONMENT \
+              --environment $CONTAINERAPPS_ENVIRONMENT \az ad sp create-for-rbac --name surya-aca-sp --role contributor --scopes /subscriptions/934d52ad-30d2-4bc6-9e61-a317452609c4/resourceGroups/personal-site-rg --sdk-auth
+
               --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} \
-              --target-port 8000 \
+              --target-port 8000 \a
               --ingress external \
               --registry-server $ACR_LOGIN_SERVER
