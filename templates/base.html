@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{% block title %}{{ name }}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="/">{{ name }}</a>
+        <div class="nav-links">
+          <a href="/">Home</a>
+          <a href="/blog">Blog</a>
+          <a href="#projects">Portfolio</a>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; {{ name }} {{ 2025 }} • Built with FastAPI</p>
+      </div>
+    </footer>
+  </body>
+ </html>

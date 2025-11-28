@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} — Blog{% endblock %}
+
+{% block content %}
+<section class="container post">
+  <article>
+    <h1>{{ post.title }}</h1>
+    <div class="post-body">{{ post.html | safe }}</div>
+  </article>
+  <p><a href="/blog">← Back to blog</a></p>
+</section>
+{% endblock %}

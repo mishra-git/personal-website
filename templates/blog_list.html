@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Blog — {{ request.app.title if request.app.title else 'Blog' }}{% endblock %}
+
+{% block content %}
+<section class="container">
+  <h1>Blog</h1>
+  {% if posts %}
+    <ul class="posts">
+      {% for p in posts %}
+        <li class="post-card">
+          <a href="/blog/{{ p.slug }}"><h2>{{ p.title }}</h2></a>
+          <p class="muted">{{ p.excerpt }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No posts found.</p>
+  {% endif %}
+</section>
+{% endblock %}

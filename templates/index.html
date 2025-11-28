@@ -1,51 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <title>{{ name }} | Personal Website</title>
-    <link rel="stylesheet" href="/static/css/styles.css" />
-</head>
-<body>
-    <header class="hero">
-        <div class="hero-content">
+{% extends "base.html" %}
+
+{% block title %}Home — {{ name }}{% endblock %}
+
+{% block content %}
+<header class="hero">
+    <div class="container hero-inner">
+        <div>
             <h1>{{ name }}</h1>
             <p class="tagline">{{ tagline }}</p>
             <p class="subtitle">
-                I build databases, cloud systems, and stories that start in a refugee camp
-                and travel all the way to the cloud.
+                I build databases, cloud systems, and stories that start in a refugee camp and travel
+                all the way to the cloud.
             </p>
         </div>
-    </header>
+        <div class="hero-cta">
+            <a class="btn" href="/blog">Read my blog</a>
+            <a class="btn ghost" href="#projects">See projects</a>
+        </div>
+    </div>
+</header>
 
-    <main class="content">
-        <section class="card">
-            <h2>About Me</h2>
-            <p>
-                I am a Principal Database Engineer and Cloud learner, originally from Bhutan,
-                raised in the Beldangi refugee camps, now living in the United States.
-                I work with SQL Server, Azure, automation, and AI tools to make life easier for engineers.
-            </p>
-        </section>
+<section class="container cards">
+    <div class="card">
+        <h2>About Me</h2>
+        <p>
+            I am a Principal Database Engineer and Cloud learner, originally from Bhutan, raised in
+            the Beldangi refugee camps, now living in the United States. I work with SQL Server, Azure,
+            automation, and AI tools to make life easier for engineers.
+        </p>
+    </div>
 
-        <section class="card">
-            <h2>What I’m Working On</h2>
-            <ul>
-                <li>Building internal tools for database automation and observability.</li>
-                <li>Learning Docker, containers, and Azure cloud architecture.</li>
-                <li>Writing my memoir to tell the story of displacement, hope, and second chances.</li>
+    <div class="card">
+        <h2>Latest Posts</h2>
+        {% if recent_posts %}
+            <ul class="post-list">
+                {% for p in recent_posts %}
+                    <li>
+                        <a class="post-link" href="/blog/{{ p.slug }}">{{ p.title }}</a>
+                        <p class="muted">{{ p.excerpt }}</p>
+                    </li>
+                {% endfor %}
             </ul>
-        </section>
+            <p><a href="/blog">See all posts →</a></p>
+        {% else %}
+            <p>No posts yet. Check back soon.</p>
+        {% endif %}
+    </div>
 
-        <section class="card">
-            <h2>Contact</h2>
-            <p>
-                Later we can add a real contact form or a simple email link here.
-            </p>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <p>&copy; {{ name }} {{ 2025 }}. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+    <div class="card" id="projects">
+        <h2>Featured Projects</h2>
+        <ul>
+            {% for project in projects %}
+                <li>
+                    <strong>{{ project.title }}</strong>
+                    <p class="muted">{{ project.description }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endblock %}
