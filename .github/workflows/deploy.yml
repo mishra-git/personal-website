@@ -5,17 +5,18 @@ on:
     branches:
       - main
 
+env:
+  ACR_NAME: suryamishraacrregistry
+  ACR_LOGIN_SERVER: suryamishraacrregistry.azurecr.io
+  IMAGE_NAME: personal-site
+  RESOURCE_GROUP: personal-site-rg
+  CONTAINERAPPS_ENVIRONMENT: surya-container-env
+  CONTAINERAPPS_NAME: surya-personal-site
+  LOCATION: eastus
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
-    env:
-      ACR_NAME: suryamishraacrregistry
-      ACR_LOGIN_SERVER: suryamishraacrregistry.azurecr.io
-      IMAGE_NAME: personal-site
-      RESOURCE_GROUP: personal-site-rg
-      CONTAINERAPPS_ENVIRONMENT: surya-container-env
-      CONTAINERAPPS_NAME: surya-personal-site
 
     steps:
       - name: Checkout code
@@ -26,35 +27,31 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # 🟦 Login to ACR on the runner (Docker is available here)
       - name: Log in to ACR
-        uses: azure/CLI@v2
-        with:
-          inlineScript: |
-            az acr login --name $ACR_NAME
+        run: az acr login --name $ACR_NAME
 
+      # 🟦 Build and push Docker image from the runner
       - name: Build and push image to ACR
         run: |
           docker build -t $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} .
           docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }}
 
-      - name: Ensure Container Apps environment exists
+      # 🟦 Use azure/CLI only for pure az commands (NO az acr login, NO docker)
+      - name: Deploy to Azure Container Apps
         uses: azure/CLI@v2
         with:
           inlineScript: |
             az containerapp env create \
               --name $CONTAINERAPPS_ENVIRONMENT \
               --resource-group $RESOURCE_GROUP \
-              --location eastus
+              --location $LOCATION
 
-      - name: Deploy to Azure Container Apps
-        uses: azure/CLI@v2
-        with:
-          inlineScript: |
             az containerapp up \
               --name $CONTAINERAPPS_NAME \
               --resource-group $RESOURCE_GROUP \
-              --environment $CONTAINERAPPS_ENVIRONMENT \az ad sp create-for-rbac --name surya-aca-sp --role contributor --scopes /subscriptions/934d52ad-30d2-4bc6-9e61-a317452609c4/resourceGroups/personal-site-rg --sdk-auth
+              --environment $CONTAINERAPPS_ENVIRONMENT \
               --image $ACR_LOGIN_SERVER/$IMAGE_NAME:${{ github.sha }} \
-              --target-port 8000 \a
+              --target-port 8000 \
               --ingress external \
               --registry-server $ACR_LOGIN_SERVER
