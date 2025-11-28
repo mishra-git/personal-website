@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{{ name }} | Personal Website</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body>
+    <header class="hero">
+        <div class="hero-content">
+            <h1>{{ name }}</h1>
+            <p class="tagline">{{ tagline }}</p>
+            <p class="subtitle">
+                I build databases, cloud systems, and stories that start in a refugee camp
+                and travel all the way to the cloud.
+            </p>
+        </div>
+    </header>
+
+    <main class="content">
+        <section class="card">
+            <h2>About Me</h2>
+            <p>
+                I am a Principal Database Engineer and Cloud learner, originally from Bhutan,
+                raised in the Beldangi refugee camps, now living in the United States.
+                I work with SQL Server, Azure, automation, and AI tools to make life easier for engineers.
+            </p>
+        </section>
+
+        <section class="card">
+            <h2>What I’m Working On</h2>
+            <ul>
+                <li>Building internal tools for database automation and observability.</li>
+                <li>Learning Docker, containers, and Azure cloud architecture.</li>
+                <li>Writing my memoir to tell the story of displacement, hope, and second chances.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Contact</h2>
+            <p>
+                Later we can add a real contact form or a simple email link here.
+            </p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; {{ name }} {{ 2025 }}. All rights reserved.</p>
+    </footer>
+</body>
+</html>
