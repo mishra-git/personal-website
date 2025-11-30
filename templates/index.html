@@ -1,62 +1,32 @@
 {% extends "base.html" %}
 
-{% block title %}Home — {{ name }}{% endblock %}
+{% block title %}{{ name }}{% endblock %}
 
 {% block content %}
-<header class="hero">
-    <div class="container hero-inner">
-        <div>
-            <h1>{{ name }}</h1>
-            <p class="tagline">{{ tagline }}</p>
-            <p class="subtitle">
-                I build databases, cloud systems, and stories that start in a refugee camp and travel
-                all the way to the cloud.
-            </p>
-        </div>
-        <div class="hero-cta">
-            <a class="btn" href="/blog">Read my blog</a>
-            <a class="btn ghost" href="#projects">See projects</a>
-        </div>
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title">{{ name }}</h1>
+      <p class="hero-subtitle">Former Refugee. Literature Lover, Dreamer & Technologist.</p>
     </div>
-</header>
-
-<section class="container cards">
-    <div class="card">
-        <h2>About Me</h2>
-        <p>
-            I am a Principal Database Engineer and Cloud learner, originally from Bhutan, raised in
-            the Beldangi refugee camps, now living in the United States. I work with SQL Server, Azure,
-            automation, and AI tools to make life easier for engineers.
-        </p>
-    </div>
-
-    <div class="card">
-        <h2>Latest Posts</h2>
-        {% if recent_posts %}
-            <ul class="post-list">
-                {% for p in recent_posts %}
-                    <li>
-                        <a class="post-link" href="/blog/{{ p.slug }}">{{ p.title }}</a>
-                        <p class="muted">{{ p.excerpt }}</p>
-                    </li>
-                {% endfor %}
-            </ul>
-            <p><a href="/blog">See all posts →</a></p>
-        {% else %}
-            <p>No posts yet. Check back soon.</p>
-        {% endif %}
-    </div>
-
-    <div class="card" id="projects">
-        <h2>Featured Projects</h2>
-        <ul>
-            {% for project in projects %}
-                <li>
-                    <strong>{{ project.title }}</strong>
-                    <p class="muted">{{ project.description }}</p>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+  </div>
 </section>
+
+<section class="container section-main">
+  <div class="card about-card about-flex">
+    <div class="about-image">
+      <img src="/static/images/profile.jpg" alt="{{ name }}" class="profile-pic">
+    </div>
+    <div class="about-content">
+      <h2>About</h2>
+      <p>
+My name is Surya Mishra. I was born into a life shaped by displacement, injustice, and years of uncertainty. I grew up as a refugee, learning resilience not from textbooks but from hunger, struggle, and the quiet strength that comes from surviving what should have broken you.
+In time, my journey carried me across the world to the United States, where I rebuilt myself piece by piece. I am a product of second chances, a life once uprooted, now replanted with purpose and hope. I carry my past with pride, not as a burden but as a reminder of how far I've come.
+This is just the beginning of my story. More to come.
+      </p>
+      <p class="metadata"><strong>Location:</strong> United States · <strong>Open to:</strong> speaking, mentoring</p>
+    </div>
+  </div>
+</section>
+
 {% endblock %}

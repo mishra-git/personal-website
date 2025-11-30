@@ -3,28 +3,31 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>{% block title %}{{ name }}{% endblock %}</title>
+    <title>{% block title %}{{ request.app.title if request.app.title else 'Personal Site' }}{% endblock %}</title>
     <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body>
-    <nav class="nav">
-      <div class="container nav-inner">
-        <a class="brand" href="/">{{ name }}</a>
-        <div class="nav-links">
-          <a href="/">Home</a>
-          <a href="/blog">Blog</a>
-          <a href="#projects">Portfolio</a>
-        </div>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="/">{{ request.app.title if request.app.title else 'My Site' }}</a>
+        <nav class="main-nav nav-right">
+          <a href="/" class="nav-btn">Home</a>
+          <a href="/blog" class="nav-btn">Blog</a>
+          <a href="/poetry" class="nav-btn">Poetry</a>
+          <a href="/career" class="nav-btn">Career</a>
+          <a href="/about" class="nav-btn">About</a>
+          <a href="/contact" class="nav-btn">Contact</a>
+        </nav>
       </div>
-    </nav>
+    </header>
 
     <main>
       {% block content %}{% endblock %}
     </main>
 
-    <footer class="footer">
+    <footer class="site-footer">
       <div class="container">
-        <p>&copy; {{ name }} {{ 2025 }} • Built with FastAPI</p>
+        <p>&copy; {{ 2025 }} {{ request.app.title if request.app.title else 'Personal Site' }}</p>
       </div>
     </footer>
   </body>

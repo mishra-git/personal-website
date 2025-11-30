@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Career — {{ request.app.title if request.app.title else 'Career' }}{% endblock %}
+
+{% block content %}
+<section class="container career">
+  <h1>Career & Resume</h1>
+
+  <section class="resume">
+    <h2>Summary</h2>
+    <p>Experienced software engineer with expertise in cloud, databases, and distributed systems.</p>
+
+    <h3>Skills</h3>
+    <ul class="skills">
+      <li>Python, FastAPI</li>
+      <li>SQL, PostgreSQL, SQL Server</li>
+      <li>Containers, Docker, Kubernetes</li>
+      <li>CI/CD, Azure</li>
+    </ul>
+
+    <h3>Projects</h3>
+    <div class="grid cards">
+      {% for project in projects or [] %}
+        <article class="card">
+          <h4><a href="{{ project.url or '#' }}">{{ project.title }}</a></h4>
+          <p>{{ project.description }}</p>
+        </article>
+      {% else %}
+        <article class="card">
+          <h4>Sample Project</h4>
+          <p>Project details go here—link your deployed apps or repo.</p>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <p class="muted">Want to add a post about your career journey? Use the admin interface (or add via DB) to publish posts.</p>
+</section>
+{% endblock %}

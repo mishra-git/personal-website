@@ -243,3 +243,52 @@ If you'd like, I can:
 - run a Markdown linter locally to check for issues
 - commit and push these README changes
 - validate the `deploy.yml` workflow with a YAML linter
+
+
+
+mermaid
+
+graph TD
+
+    subgraph Dev["Dev Machine (VS Code, Local Docker)"]
+        U[Surya<br/>VS Code + FastAPI code]
+    end
+
+    subgraph GitHub["GitHub"]
+        R[(Repo: personal-website)]
+        WF[[GitHub Actions<br/>build-and-deploy.yml]]
+    end
+
+    subgraph Azure["Azure Subscription"]
+        subgraph RG["Resource Group: personal-site-rg"]
+            ACR[(Azure Container Registry<br/>suryamishraacrregistry)]
+            
+            subgraph ACAEnv["Azure Container Apps Env<br/>surya-container-env"]
+                ACA[Azure Container App<br/>surya-personal-site<br/>FastAPI + Jinja2]
+            end
+            
+            DB[(Azure SQL Database<br/>Articles & site data)]
+        end
+    end
+
+    subgraph DNS["Public DNS / Domain"]
+        GD[(GoDaddy<br/>thesurya.net)]
+    end
+
+    subgraph Users["Browser Users"]
+        B1[Visitor<br/>www.thesurya.net]
+    end
+
+    %% Flows
+    U -->|git push main| R
+    R --> WF
+
+    WF -->|build & push image| ACR
+    WF -->|deploy image| ACA
+
+    B1 -->|HTTPS<br/>www.thesurya.net| GD
+    GD -->|CNAME<br/>www → *.azurecontainerapps.io| ACA
+
+    ACA -->|TDS/SQL over TLS| DB
+
+    ```

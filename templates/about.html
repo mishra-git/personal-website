@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}About — {{ request.app.title if request.app.title else 'About' }}{% endblock %}
+
+{% block content %}
+<section class="container about">
+  <h1>About Me</h1>
+  <div class="two-col">
+    <div>
+      <p>I am an engineer focused on building scalable systems and mentoring teams. I enjoy automation, databases, and cloud-native architectures.</p>
+      <h3>Family</h3>
+      <p>I live with my family — they are my inspiration. We enjoy weekend hikes, cooking together, and reading poetry aloud.</p>
+      <h3>Passion</h3>
+      <p>My passion is making complex systems simple and reliable, and helping others grow their skills with practical guidance.</p>
+    </div>
+    <aside>
+      <img src="/static/images/profile.jpg" alt="Profile" class="profile-img about-img">
+      <p class="muted">A quick note: replace this photo at `static/images/profile.jpg`</p>
+    </aside>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Contact — {{ request.app.title if request.app.title else 'Contact' }}{% endblock %}
+
+{% block content %}
+<section class="container contact">
+  <h1>Contact</h1>
+  <p>If you'd like to reach out, email me at <a href="mailto:you@example.com">you@example.com</a> or connect on LinkedIn.</p>
+
+  <div class="contact-grid">
+    <div class="card">
+      <h3>Email</h3>
+      <p><a href="mailto:you@example.com">you@example.com</a></p>
+    </div>
+    <div class="card">
+      <h3>Location</h3>
+      <p>Your City, Country</p>
+    </div>
+    <div class="card">
+      <h3>Social</h3>
+      <p><a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a> · <a href="#" target="_blank">Twitter</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}
